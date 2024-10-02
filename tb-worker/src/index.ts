@@ -1,16 +1,3 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.toml`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
-
 export interface Env {
 	// If you set another name in wrangler.toml as the value for 'binding',
 	// replace "DB" with the variable name you defined.
@@ -18,7 +5,7 @@ export interface Env {
 }
 
 type BlockUserRequestBody = {
-	username: string;
+	username: string | undefined;
 };
 
 export default {
@@ -26,10 +13,36 @@ export default {
 		if (request.url.endsWith('/add')) {
 			const body = await request.text();
 			const data: BlockUserRequestBody = JSON.parse(body);
-			// check if user is already blocked
-			const user = await env.DB.prepare(`SELECT * FROM blocked_users WHERE username = ${data.username}`).bind(env.DB).first();
 
-			const result = await env.DB.exec(`INSERT INTO blocked_users (username, blocked_times) VALUES (${data.username}, 1)`);
+			if (!data.username) {
+				return new Response('Username is required', { status: 400 });
+			}
+
+			// console.log(data.username);
+			// check if user is already blocked
+			const user = await env.DB.prepare(`SELECT * FROM blocked_users WHERE username = ?`).bind(data.username).first();
+
+			// console.log(user);
+
+			if (user) {
+				// increment blocked_times
+				const result = await env.DB.exec(`UPDATE blocked_users SET blocked_times = blocked_times + 1 WHERE username = '${data.username}'`);
+			} else {
+				// add user to blocked_users table
+				const result = await env.DB.exec(`INSERT INTO blocked_users (username, blocked_times) VALUES ('${data.username}', 1)`);
+			}
+
+			return new Response('User blocked', { status: 200 });
+		}
+
+		// fetch
+		if (request.url.endsWith('/fetch')) {
+			const { results } = await env.DB.prepare(`SELECT * FROM blocked_users`).all();
+			// convert to space-delimited string
+			const blocked_users = results.map((user) => user.username).join(' ');
+			// make response cached for 1 day
+			const headers = new Headers({ 'Cache-Control': 'public, max-age=86400' });
+			return new Response(blocked_users, { headers });
 		}
 		// return 404
 		return new Response('Not found', { status: 404 });

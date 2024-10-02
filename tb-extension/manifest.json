@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Threads Blocker",
+  "version": "1.0",
+  "description": "Only good vibes allowed here ✨",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["activeTab"],
+  "host_permissions": ["https://threads.net/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://threads.net/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["images/*"],
+      "matches": ["https://threads.net/*"]
+    }
+  ]
+}
