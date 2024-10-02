@@ -4,4 +4,3 @@ CREATE TABLE IF NOT EXISTS blocked_users (
     username TEXT NOT NULL,
     blocked_times INTEGER NOT NULL
     );
-INSERT INTO blocked_users (username, blocked_times) VALUES ('ekaniyereo', 1);

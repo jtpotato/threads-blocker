@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>Add username to the blocklist</p>
+    <form id="blockForm">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required />
+      <button type="submit">Add</button>
+    </form>
+
+    <script>
+      document
+        .getElementById("blockForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault(); // Prevent the form from submitting the traditional way
+          const username = document.getElementById("username").value;
+
+          const url = "https://tb-worker.jtpotatodev.workers.dev/add";
+
+          try {
+            const response = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ username: username }),
+            });
+
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            // Optionally handle the response
+            const data = await response.json();
+            console.log("Success:", data);
+            alert("Username added to blocklist!");
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Failed to add username.");
+          }
+        });
+    </script>
+  </body>
+</html>

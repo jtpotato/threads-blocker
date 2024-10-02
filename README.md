@@ -1,5 +1,7 @@
 # threads-blocker
 
+A universal blocklist for all Threads users.
+
 This is a repository that contains two projects
 
 `tb-extension`, the Chrome Extension or the "frontend"/client and `tb-worker`, the code that goes to Cloudflare Workers or the "backend"/server
