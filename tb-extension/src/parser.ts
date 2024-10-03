@@ -17,6 +17,12 @@ export function getPosts(timeline: HTMLDivElement) {
     /** @type {HTMLDivElement} */
     const post =
       timeline.children[i].children[0].children[0].children[0].children[0];
+
+    if (post.tagName.toLowerCase() !== "div") {
+      // then it's not really a post, it could be something else.
+      continue;
+    }
+
     posts.push(post as HTMLDivElement);
   }
 
@@ -24,9 +30,11 @@ export function getPosts(timeline: HTMLDivElement) {
 }
 
 export function getUsername(post: HTMLDivElement) {
+  // console.log(post);
   const usernameNode = post.children[1].children[0].children[0].children[0]
     .children[0] as HTMLSpanElement;
   const username = usernameNode.innerText;
+  // console.log("[Threads Blocker] Username detected: ", username);
   return username;
 }
 
