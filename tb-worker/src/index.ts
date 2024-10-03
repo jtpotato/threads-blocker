@@ -51,8 +51,8 @@ export default {
 			const { results } = await env.DB.prepare(`SELECT * FROM blocked_users`).all();
 			// Convert to space-delimited string
 			const blocked_users = results.map((user) => user.username).join(' ');
-			// Make response cached for 1 day
-			const cacheHeaders = new Headers({ 'Cache-Control': 'public, max-age=86400' });
+			// Make response cached for 2 hours
+			const cacheHeaders = new Headers({ 'Cache-Control': 'public, max-age=7200' });
 			headers.append('Cache-Control', cacheHeaders.get('Cache-Control')!);
 			return new Response(blocked_users, { headers });
 		}
