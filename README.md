@@ -15,3 +15,9 @@ Please contribute! Code, documentation, ideas, whatever - we want to hear it! Op
 - [ ] Better caching so that we stay within D1 free tier
 - [ ] Improve scaling to more users
 - [ ] Make the extension look nicer
+
+## API Docs
+
+There is a public API if you want to build your own frontend!
+
+See [API Docs](./tb-worker/README.md)
